@@ -43,28 +43,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         customAuthenticationFilter.setFilterProcessesUrl("/accessManager/login");
         http.csrf().disable(); //disabilita il cross site request forgery
         http.sessionManagement().sessionCreationPolicy(STATELESS);
-        //manca nell'implementazione il ruolo del super admin
-        //http.authorizeRequests().anyRequest().hasAnyAuthority("ROLE_SUPER_ADMIN"); //permette al super admin di fare qualunque operazione
+
         http.authorizeRequests().antMatchers("/accessManager/login/**", "/accessManager/token/refresh/**").permitAll();
-        //NON AUTENTICATO - registrazione passeggero e info tabelloni
-        http.authorizeRequests().antMatchers(POST,"/agencymng/passengers/newregistration").permitAll();
-        http.authorizeRequests().antMatchers(GET,"/utils/tabellone/**").permitAll();
+        //NON AUTENTICATO - registrazione utente
+        http.authorizeRequests().antMatchers(POST,"/accessManager/utenti").permitAll();
 
         //PERMESSI ADMIN
         http.authorizeRequests().antMatchers( "/accessManager/utenti/**", "/accessManager/roles/**").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers( "/agencymng/passengers/listall","/flights/**").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers(GET, "/agencymng/passengers/**").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers(PUT, "/agencymng/passengers/**").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers(DELETE, "/agencymng/passengers/**").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers(GET, "/agencymng/bookings/listall").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers(PUT, "/agencymng/bookings/**").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers(DELETE, "/agencymng/bookings/**").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers(PUT, "/agencymng/bookings/searchbydate").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers( "/songManager/**").hasAnyAuthority("ROLE_ADMIN");
 
-        //TODO fare check su questa, eventualmente decommentare, dovrebbe bastare l'authenticated sotto
-        //http.authorizeRequests().antMatchers(GET, "/agencymng/bookings/**").hasAnyAuthority("ROLE_USER");
-        //http.authorizeRequests().antMatchers(GET, "/agencymng/passengers/**").hasAnyAuthority("ROLE_USER");
-        //POST dovrebbero potera fare tutti gli autenticati
+        //AUTENTICATO - può fare la GET di tutte le liste di canzoni
+        http.authorizeRequests().antMatchers(GET, "/songManager/listaBrani/**").hasAnyAuthority("ROLE_USER");
+        http.authorizeRequests().antMatchers(GET, "/songManager/listaPerVoti/**").hasAnyAuthority("ROLE_USER");
+        http.authorizeRequests().antMatchers(GET, "/songManager/listaPerAutori/**").hasAnyAuthority("ROLE_USER");
+        http.authorizeRequests().antMatchers(GET, "/songManager/listaPerTitoli/**").hasAnyAuthority("ROLE_USER");
 
         http.authorizeRequests().anyRequest().authenticated(); //verificare poi accesso per utenti se non lo specifico
         http.addFilter(customAuthenticationFilter);
@@ -72,8 +64,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     }
 
-
-    //creato perchè serve come parametro al filtro custom
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
