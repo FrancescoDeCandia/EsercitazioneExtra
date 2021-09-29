@@ -1,12 +1,12 @@
 package it.apulia.EsercitazioneExtra.repository;
 
-import it.apulia.EsercitazioneExtra.model.Brano;
+import it.apulia.EsercitazioneExtra.accessManager.model.Utente;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface RepositoryUtente extends JpaRepository<Brano, String> {
+public interface RepositoryUtente extends JpaRepository<Utente, String> {
 
-    Brano findByUsername(String username);
+    Utente findByUsername(String username);
     Boolean existsByUsername(String username);
 }

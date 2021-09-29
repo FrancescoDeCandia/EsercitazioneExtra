@@ -51,5 +51,20 @@ public class BranoController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/listaPerVoti")
+    public ResponseEntity<List<Brano>> getBraniByVoti(){
+        return ResponseEntity.ok().body(branoService.getBranoByVoto());
+    }
+
+    @GetMapping("/listaPerAutori")
+    public ResponseEntity<List<Brano>> getBraniByAutori(){
+        return ResponseEntity.ok().body(branoService.getBranoByAutore());
+    }
+
+    @GetMapping("/listaPerTitoli")
+    public ResponseEntity<List<Brano>> getBraniByTitoli(){
+        return ResponseEntity.ok().body(branoService.getBranoByTitolo());
+    }
+
 
 }
