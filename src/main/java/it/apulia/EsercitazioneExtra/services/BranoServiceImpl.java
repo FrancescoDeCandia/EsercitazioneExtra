@@ -1,9 +1,7 @@
 package it.apulia.EsercitazioneExtra.services;
 
-import it.apulia.EsercitazioneExtra.errors.MyNotAcceptableException;
 import it.apulia.EsercitazioneExtra.errors.MyNotFoundException;
 import it.apulia.EsercitazioneExtra.model.Brano;
-import it.apulia.EsercitazioneExtra.model.BranoDTO;
 import it.apulia.EsercitazioneExtra.repository.BranoRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,20 +20,19 @@ public class BranoServiceImpl implements BranoService {
 
     @Override
     public List<Brano> getAllBrani() {
+        log.info("Ecco la lista di tutti i brani presenti!");
         return branoRepository.findAll();
     }
 
+    // SAVE BRANO DA OTTIMIZZARE CON UN CHECK SULLA GIA' ESISTENZA NEL DATABASE (PER AUTORE E TITOLO)
     @Override
     public void saveBrano(Brano brano) {
-        Brano temp = new Brano(brano.getAutore(), brano.getTitolo());
-        if (!(temp == branoRepository.findBranoByAutoreAndTitolo(brano.getAutore(), brano.getTitolo()))) {
             branoRepository.save(brano);
-                URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/songManager/ricerca/" + brano.getAutore() + "/" + brano.getTitolo()).toUriString());
 
-             throw new MyNotAcceptableException("Il brano " + brano.getTitolo() + " è già presente all'interno del DB");
-        }
-            log.info("Brano SALVATO con successo!");
+            URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath()
+                    .path("/songManager/ricerca/" + brano.getAutore() + "/" + brano.getTitolo()).toUriString());
+
+        log.info("Brano SALVATO con successo!");
     }
 
     @Override
@@ -45,14 +42,12 @@ public class BranoServiceImpl implements BranoService {
         } else
             log.info("Brano AGGIORNATO con successo!");
             this.branoRepository.save(brano);
-
     }
 
     @Override
     public void deleteBrano(String autore, String titolo) {
         log.info("Brano CANCELLATO con successo!");
         branoRepository.deleteBranoByAutoreAndTitolo(autore,titolo);
-
     }
 
     @Override

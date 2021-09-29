@@ -24,7 +24,7 @@ public class Brano {
             generator = "song_sequence"
     )
 
-    String branoId;
+    Long branoId;
     String titolo;
     String autore;
     String album;

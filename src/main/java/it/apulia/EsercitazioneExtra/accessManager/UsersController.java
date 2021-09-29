@@ -33,6 +33,7 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 @RequestMapping("/accessManager")
 @RequiredArgsConstructor
 public class UsersController {
+
     private final UtenteService serviceUtente;
 
     @GetMapping("/utenti")
@@ -60,7 +61,6 @@ public class UsersController {
         return ResponseEntity.ok().build();
     }
 
-
     @GetMapping("/token/refresh")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
@@ -86,7 +86,6 @@ public class UsersController {
             }catch (Exception exception) {
                 response.setHeader("error", exception.getMessage());
                 response.setStatus(FORBIDDEN.value());
-                //response.sendError(FORBIDDEN.value());
                 Map<String, String> error = new HashMap<>();
                 error.put("error_message", exception.getMessage());
                 response.setContentType(MimeTypeUtils.APPLICATION_JSON_VALUE);

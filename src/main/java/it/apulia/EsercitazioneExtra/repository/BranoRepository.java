@@ -8,16 +8,20 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface BranoRepository extends JpaRepository<Brano,String> {
+public interface BranoRepository extends JpaRepository<Brano,Long> {
 
     Brano findBranoByAutoreAndTitolo(String autore,String titolo);
     void deleteBranoByAutoreAndTitolo(String autore, String titolo);
 
-    @Query
+    // (NATIVE QUERY = TRUE) CONSENTE DI SCRIVERE QUERY IN LINGUAGGIO PROPRIO SQL
+    // PIUTTOSTO CHE CON SINTASSI JPA (UTILIZZO DI ALIAS, DOT NOTATION E ?1
+    @Query(value = "SELECT * FROM Brano ORDER BY voto DESC", nativeQuery = true)
     List<Brano> findBranoByVoto();
-    @Query
+
+    @Query(value = "SELECT * FROM Brano ORDER BY autore ASC", nativeQuery = true)
     List<Brano> findBranoByAutore();
-    @Query
+
+    @Query(value = "SELECT * FROM Brano ORDER BY titolo ASC", nativeQuery = true)
     List<Brano> findBranoByTitolo();
 
 }

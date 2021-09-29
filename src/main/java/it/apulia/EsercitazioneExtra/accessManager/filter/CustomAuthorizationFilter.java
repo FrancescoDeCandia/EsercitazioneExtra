@@ -30,7 +30,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        //if true it does nothing
+
         if(request.getServletPath().equals("/accessManager/login") || request.getServletPath().equals("/accessManager/token/refresh")) {
             filterChain.doFilter(request, response);
         } else {
@@ -38,12 +38,12 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
             if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
                 try {
                     String token = authorizationHeader.substring("Bearer ".length());
-                    Algorithm algorithm = Algorithm.HMAC256("secret".getBytes()); //il seed deve essere lo stesso inserito nell'altra classe
+                    Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
                     JWTVerifier verifier = JWT.require(algorithm).build();
                     DecodedJWT decodedJWT = verifier.verify(token);
                     String username = decodedJWT.getSubject();
-                    String[] roles = decodedJWT.getClaim("roles").asArray(String.class); //non abbiamo bisogno della password perché qui l'utente è giù autenticato
-                    Collection<SimpleGrantedAuthority> authorities = new ArrayList<>(); //questa fase serve per il passaggio dei ruoli al granted authority
+                    String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
+                    Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
                     stream(roles).forEach(role -> {
                         authorities.add(new SimpleGrantedAuthority(role));
                     });
@@ -55,7 +55,6 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                     log.error("Error logging in: {}", exception.getMessage());
                     response.setHeader("error", exception.getMessage());
                     response.setStatus(FORBIDDEN.value());
-                    //response.sendError(FORBIDDEN.value());
                     Map<String, String> error = new HashMap<>();
                     error.put("error_message", exception.getMessage());
                     response.setContentType(APPLICATION_JSON_VALUE);

@@ -3,20 +3,14 @@ package it.apulia.EsercitazioneExtra.controller;
 import it.apulia.EsercitazioneExtra.model.Brano;
 import it.apulia.EsercitazioneExtra.model.BranoDTO;
 import it.apulia.EsercitazioneExtra.services.BranoService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import java.net.URI;
 import java.util.List;
 
 @RestController
-@Slf4j
 @RequestMapping(path = "/songManager")
 public class BranoController {
 
@@ -32,6 +26,24 @@ public class BranoController {
         return ResponseEntity.ok().body(branoService.getAllBrani());
     }
 
+    // QUERY: VOTI DAL PIU' ALTO AL PIU' BASSO
+    @GetMapping("/listaPerVoti")
+    public ResponseEntity<List<Brano>> getBraniByVoti(){
+        return ResponseEntity.ok().body(branoService.getBranoByVoto());
+    }
+
+    // QUERY: AUTORI IN ORDINE ALFABETICO
+    @GetMapping("/listaPerAutori")
+    public ResponseEntity<List<Brano>> getBraniByAutori(){
+        return ResponseEntity.ok().body(branoService.getBranoByAutore());
+    }
+
+    // QUERY: TITOLI IN ORDINE ALFABETICO
+    @GetMapping("/listaPerTitoli")
+    public ResponseEntity<List<Brano>> getBraniByTitoli(){
+        return ResponseEntity.ok().body(branoService.getBranoByTitolo());
+    }
+
     @PostMapping("/addSong")
     public ResponseEntity<?> addSong(@RequestBody @Valid BranoDTO brano){
         Brano temp = new Brano(brano.getTitolo(), brano.getAutore(), brano.getAlbum(), brano.getAnno(), brano.getVoto());
@@ -40,7 +52,7 @@ public class BranoController {
     }
 
     @PutMapping("/{branoId}")
-    public ResponseEntity<?> updateBrano(@RequestBody @Valid Brano brano){
+    public ResponseEntity<?> updateBrano(@PathVariable String branoId, @RequestBody Brano brano){
         branoService.updateBrano(brano);
         return ResponseEntity.ok().body(brano);
     }
@@ -50,21 +62,5 @@ public class BranoController {
         branoService.deleteBrano(autore, titolo);
         return ResponseEntity.ok().build();
     }
-
-    @GetMapping("/listaPerVoti")
-    public ResponseEntity<List<Brano>> getBraniByVoti(){
-        return ResponseEntity.ok().body(branoService.getBranoByVoto());
-    }
-
-    @GetMapping("/listaPerAutori")
-    public ResponseEntity<List<Brano>> getBraniByAutori(){
-        return ResponseEntity.ok().body(branoService.getBranoByAutore());
-    }
-
-    @GetMapping("/listaPerTitoli")
-    public ResponseEntity<List<Brano>> getBraniByTitoli(){
-        return ResponseEntity.ok().body(branoService.getBranoByTitolo());
-    }
-
 
 }

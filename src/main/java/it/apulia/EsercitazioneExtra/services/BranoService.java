@@ -8,11 +8,13 @@ import java.util.List;
 
 public interface BranoService {
 
+    // METODI CRUD BASE
     List<Brano> getAllBrani();
     void saveBrano(Brano brano);
     void updateBrano(Brano brano);
     void deleteBrano(String autore, String titolo);
 
+    // METODI PER LE QUERY
     List<Brano> getBranoByVoto();
     List<Brano> getBranoByAutore();
     List<Brano> getBranoByTitolo();

@@ -41,7 +41,6 @@ public class UserServiceImpl implements UtenteService, UserDetailsService {
             utente.getRoles().forEach(role -> {
                 authorities.add(new SimpleGrantedAuthority(role.getNome()));
             });
-            //ho potuto mettere il return seguente così perché ho distinto Utente custom e User
             return new User(utente.getUsername(), utente.getPassword(), authorities);
         }
     }
@@ -49,7 +48,6 @@ public class UserServiceImpl implements UtenteService, UserDetailsService {
     @Override
     public Utente saveUtente(Utente utente) {
         log.info("Salvataggio dell'utente {} all'interno del database", utente.getUsername());
-        //esempio di log, realisticamente da utilizzare in maniera sensata un po' ovunque
         utente.getRoles().forEach(
                 role -> {
                     String nome = role.getNome();
@@ -65,18 +63,12 @@ public class UserServiceImpl implements UtenteService, UserDetailsService {
         return this.roleRepository.save(role);
     }
 
-    //in questo caso l'operazione viene eseguita dato il tag @transactional definita all'inizio della classe
-    //in casi reali si fa più attenzione sull'utilizzo di questa annotazione, ci saranno altri check da fare
     @Override
     public void addRoleToUtente(String username, String roleName) {
         Utente utente = this.repositoryUtente.findByUsername(username);
         Role role = this.roleRepository.findByNome(roleName);
         log.info("Aggiungo il ruolo {} all'utente {}.",role.getNome(),utente.getUsername());
         utente.getRoles().add(role);
-
-        this.repositoryUtente.deleteById(utente.getId());
-        this.repositoryUtente.save(utente);
-
     }
 
     @Override
@@ -92,13 +84,16 @@ public class UserServiceImpl implements UtenteService, UserDetailsService {
         return this.repositoryUtente.findAll();
     }
 
+    @Override
+    public void deleteAll() {
+        this.repositoryUtente.deleteAll();
+    }
+
+
     public void resetAll() {
         this.repositoryUtente.deleteAll();
         this.roleRepository.deleteAll();
     }
 
-    @Override
-    public void deleteAll() {
-        this.repositoryUtente.deleteAll();
-    }
+
 }
