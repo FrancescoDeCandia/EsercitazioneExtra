@@ -33,10 +33,23 @@ public class BranoController {
     }
 
     @PostMapping("/addSong")
-    public ResponseEntity<Brano> addSong(@RequestBody @Valid BranoDTO brano){
+    public ResponseEntity<?> addSong(@RequestBody @Valid BranoDTO brano){
         Brano temp = new Brano(brano.getTitolo(), brano.getAutore(), brano.getAlbum(), brano.getAnno(), brano.getVoto());
         branoService.saveBrano(temp);
         return ResponseEntity.ok().body(temp);
-
     }
+
+    @PutMapping("/{branoId}")
+    public ResponseEntity<?> updateBrano(@RequestBody @Valid Brano brano){
+        branoService.updateBrano(brano);
+        return ResponseEntity.ok().body(brano);
+    }
+
+    @DeleteMapping("/{autore}/{titolo}")
+    public ResponseEntity<?> deleteBrano(@PathVariable String autore, @PathVariable String titolo){
+        branoService.deleteBrano(autore, titolo);
+        return ResponseEntity.ok().build();
+    }
+
+
 }

@@ -24,7 +24,7 @@ public class Brano {
             generator = "song_sequence"
     )
 
-    Long branoId;
+    String branoId;
     String titolo;
     String autore;
     String album;
@@ -37,5 +37,10 @@ public class Brano {
         this.album = album;
         this.anno = anno;
         this.voto = voto;
+    }
+
+    public Brano(String autore, String titolo) {
+        this.titolo = titolo;
+        this.autore = autore;
     }
 }
